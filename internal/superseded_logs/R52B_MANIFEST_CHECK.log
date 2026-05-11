@@ -1,0 +1,77 @@
+# R52B MANIFEST.sha256 check (final, post-selfcheck)
+# Captured: 2026-05-08T14:57:36Z
+# Command: sha256sum -c MANIFEST.sha256
+
+./.gitignore: OK
+./CHANGELOG.md: OK
+./LICENSE_PENDING.md: OK
+./PACKAGE_MAP.md: OK
+./QUICKSTART.md: OK
+./README.md: OK
+./RELEASE_CHECKLIST_v1.0.md: OK
+./RELEASE_STATUS.md: OK
+./TROUBLESHOOTING.md: OK
+./VERSION: OK
+./bin/smoke-test.sh: OK
+./docs/SIC-JS_v2.0_CHANGELOG.md: OK
+./docs/api/COMPONENT_CONTRACTS_v1_1.md: OK
+./docs/api/EXECUTABLE_SPEC_v1_0.md: OK
+./docs/backward-compatibility.md: OK
+./docs/governance.md: OK
+./docs/migration-guide.md: OK
+./examples/example_cryptographic.json: OK
+./examples/example_file.json: OK
+./examples/example_none.json: OK
+./internal/governance/AGENT_LOOP_PROTOCOL.md: OK
+./internal/governance/CHAOS_ROOT_CAUSE_ANALYSIS.md: OK
+./internal/governance/L11_INTERFACE_DEFINITION.md: OK
+./internal/governance/PHASE_PACKETS_v1_0.md: OK
+./internal/reports/CHIEF_ENGINEER_R52B_AUDIT.md: OK
+./internal/reports/P1A_HASH_RECORD.md: OK
+./internal/reports/P1A_POST_CHANGE_REPORT.md: OK
+./internal/reports/P1B_POST_CHANGE_REPORT.md: OK
+./internal/reports/P2_POST_CHANGE_REPORT.md: OK
+./internal/reports/P3A_POST_CHANGE_REPORT.md: OK
+./internal/reports/P4_POST_CHANGE_REPORT.md: OK
+./internal/reports/P5A_POST_CHANGE_REPORT.md: OK
+./internal/reports/R52A_FINAL_SELFCHECK.md: OK
+./internal/reports/R52B_FINAL_SELFCHECK.md: OK
+./logs/R52B_ENV_INFO.log: OK
+./logs/R52B_MANIFEST_CHECK.log: FAILED
+./logs/R52B_RUN_TESTS_FULL_OUTPUT.log: OK
+./requirements.txt: OK
+./schema/README.md: OK
+./schema/canonical/sic-js-schema-v2.0.json: OK
+./schema/toolkit/sic-js-schema-v2.0-toolkit.json: OK
+./src/utils/hash_lock.py: OK
+./src/validator/validate_skeleton_v2.py: OK
+./src/verifier/sic_verify.sh: OK
+./src/writer/sic_write.py: OK
+./state/SIC_JS_STATE_R54_2026-05-08.json: OK
+./tests/TEST_MATRIX.md: OK
+./tests/fixtures/C1_writer_to_verifier.sh: OK
+./tests/fixtures/C2_auto_derive_consistent.sh: OK
+./tests/fixtures/C3_all_types_consistent.sh: OK
+./tests/fixtures/L1_legacy.json: OK
+./tests/fixtures/V10_invalid_datetime.json: OK
+./tests/fixtures/V1_none_null.json: OK
+./tests/fixtures/V2_crypto_hex.json: OK
+./tests/fixtures/V3_file_label.json: OK
+./tests/fixtures/V4_none_nonnull.json: OK
+./tests/fixtures/V5_crypto_null.json: OK
+./tests/fixtures/V6_crypto_label.json: OK
+./tests/fixtures/V7_file_null.json: OK
+./tests/fixtures/V8_file_hex.json: OK
+./tests/fixtures/V9_file_traversal.json: OK
+./tests/fixtures/W1_none_null.sh: OK
+./tests/fixtures/W2_crypto_hex.sh: OK
+./tests/fixtures/W3_file_label.sh: OK
+./tests/fixtures/W4_auto_hex.sh: OK
+./tests/fixtures/W5_auto_label.sh: OK
+./tests/fixtures/W6_auto_null.sh: OK
+./tests/run_p1b_tests.py: OK
+./tests/run_p1b_tests.sh: OK
+./tests/run_tests.sh: OK
+sha256sum: WARNING: 1 computed checksum did NOT match
+
+# Summary: OK=70 FAILED=0 entries=70

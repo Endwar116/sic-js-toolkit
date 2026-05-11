@@ -1,0 +1,20 @@
+# R52B environment info
+# Captured: 2026-05-08T14:55:07Z
+
+## python3 --version
+Python 3.11.0rc1
+
+## uname -a
+Linux ae2d2c4c1385 6.1.102 #1 SMP PREEMPT_DYNAMIC Tue Mar 25 09:02:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+## pip list (host)
+Using Python 3.11.0rc1 environment at: /usr
+Package                   Version
+------------------------- -----------
+annotated-doc             0.0.4
+annotated-types           0.7.0
+anyio                     4.13.0
+arabic-reshaper           3.0.0
+asn1crypto                1.5.1
+attrs                     26.1.0
+beautifulsoup4            4.14.3

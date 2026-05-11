@@ -1,0 +1,19 @@
+{
+  "sic_version": "2.0",
+  "round": 8,
+  "entity": {
+    "name": "test",
+    "model": "TestModel"
+  },
+  "state": {
+    "context": "c",
+    "current_action": "a"
+  },
+  "relation": {
+    "user": "u",
+    "upstream_type": "file",
+    "upstream": "a3f8b2c1d4e5f607"
+  },
+  "event": null,
+  "intent": null
+}

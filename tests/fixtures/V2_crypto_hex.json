@@ -1,0 +1,19 @@
+{
+  "sic_version": "2.0",
+  "round": 2,
+  "entity": {
+    "name": "test",
+    "model": "TestModel"
+  },
+  "state": {
+    "context": "c",
+    "current_action": "a"
+  },
+  "relation": {
+    "user": "u",
+    "upstream_type": "cryptographic",
+    "upstream": "a3f8b2c1d4e5f607"
+  },
+  "event": null,
+  "intent": null
+}

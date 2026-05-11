@@ -1,0 +1,40 @@
+[runner] timeout backend: timeout (per-test=30s, kill-after=5s)
+
+[Writer Tests W1-W6]
+  ✅ W1_writer_none_null (exit=0)
+  ✅ W2_writer_crypto_hex (exit=0)
+  ✅ W3_writer_file_label (exit=0)
+  ✅ W4_writer_auto_crypto (exit=0)
+  ✅ W4_auto_derive_check (got: cryptographic)
+  ✅ W5_writer_auto_file (exit=0)
+  ✅ W6_writer_auto_none (exit=0)
+
+[Verifier Tests V1-V10]
+  ✅ V1_none_null (exit=0)
+  ✅ V2_crypto_hex (exit=0)
+  ✅ V3_file_label (exit=0)
+  ✅ V4_none_nonnull (expect FAIL) (exit=1)
+  ✅ V5_crypto_null (expect FAIL) (exit=1)
+  ✅ V6_crypto_label (expect FAIL) (exit=1)
+  ✅ V7_file_null (expect FAIL) (exit=1)
+  ✅ V8_file_hex (expect FAIL) (exit=1)
+  ✅ V9_file_traversal (expect UNSAFE) (exit=5)
+  ✅ V10_invalid_datetime (expect FAIL) (exit=1)
+
+[Consistency Tests C1-C3]
+  ✅ C1_writer_W2_to_verifier (exit=0)
+  ✅ C2_writer_W4_auto_to_verifier (exit=0)
+  ✅ C3_writer_W1W2W3_consistency
+
+[Legacy Test L1]
+  ✅ L1_legacy_toolkit_mode (expect LEGACY) (exit=6)
+  ✅ L1_legacy_canonical_mode (expect PASS) (exit=0)
+
+[CLI Regression Tests]
+  ✅ CLI_mode_toolkit_plus_toolkit_mode (expect INVALID_USAGE) (exit=2)
+  ✅ W_stdout_self_validate (exit=0)
+  ✅ W_stdout_verifier (exit=0)
+
+=====================================
+TOTAL: 25  PASS: 25  FAIL: 0
+=====================================

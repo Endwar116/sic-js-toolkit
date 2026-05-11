@@ -1,0 +1,92 @@
+=== R52C Environment Info ===
+Date (UTC):  2026-05-08T17:18:13Z
+Host uname:  Linux ae2d2c4c1385 6.1.102 #1 SMP PREEMPT_DYNAMIC Tue Mar 25 09:02:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+Python:      Python 3.11.0rc1
+pip:         pip 22.0.2 from /tmp/r52c_logs/sic-js-toolkit/.venv/lib/python3.11/site-packages/pip (python 3.11)
+jsonschema:  4.26.0
+bash:        GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)
+timeout cmd: /usr/bin/timeout
+timeout ver: timeout (GNU coreutils) 8.32
+sha256sum:   /usr/bin/sha256sum
+Toolkit ver: R52c
+State file:  state/SIC_JS_STATE_R55_2026-05-09.json
+
+=== smoke-test.sh full run (Linux native, expecting ALL PASS) ===
+======================================================
+SIC-JS Toolkit smoke-test (R52c)
+Toolkit root: /tmp/r52c_logs/sic-js-toolkit
+OS:           Linux 6.1.102
+======================================================
+
+[0/5] Preflight checks...
+  python3: Python 3.11.0rc1
+  pip:     pip 22.0.2
+  sha256sum: present
+  timeout: /usr/bin/timeout (functional probe PASS)
+  Preflight PASS.
+
+[1/5] Creating virtual environment (.venv)...
+  .venv already exists — reusing.
+
+[2/5] Installing dependencies (jsonschema)...
+<string>:1: DeprecationWarning: Accessing jsonschema.__version__ is deprecated and will be removed in a future release. Use importlib.metadata directly to query for jsonschema's version.
+  jsonschema: 4.26.0
+
+[3/5] Running tests/run_tests.sh ...
+[runner] timeout backend: timeout (per-test=30s, kill-after=5s)
+
+[Writer Tests W1-W6]
+  ✅ W1_writer_none_null (exit=0)
+  ✅ W2_writer_crypto_hex (exit=0)
+  ✅ W3_writer_file_label (exit=0)
+  ✅ W4_writer_auto_crypto (exit=0)
+  ✅ W4_auto_derive_check (got: cryptographic)
+  ✅ W5_writer_auto_file (exit=0)
+  ✅ W6_writer_auto_none (exit=0)
+
+[Verifier Tests V1-V10]
+  ✅ V1_none_null (exit=0)
+  ✅ V2_crypto_hex (exit=0)
+  ✅ V3_file_label (exit=0)
+  ✅ V4_none_nonnull (expect FAIL) (exit=1)
+  ✅ V5_crypto_null (expect FAIL) (exit=1)
+  ✅ V6_crypto_label (expect FAIL) (exit=1)
+  ✅ V7_file_null (expect FAIL) (exit=1)
+  ✅ V8_file_hex (expect FAIL) (exit=1)
+  ✅ V9_file_traversal (expect UNSAFE) (exit=5)
+  ✅ V10_invalid_datetime (expect FAIL) (exit=1)
+
+[Consistency Tests C1-C3]
+  ✅ C1_writer_W2_to_verifier (exit=0)
+  ✅ C2_writer_W4_auto_to_verifier (exit=0)
+  ✅ C3_writer_W1W2W3_consistency
+
+[Legacy Test L1]
+  ✅ L1_legacy_toolkit_mode (expect LEGACY) (exit=6)
+  ✅ L1_legacy_canonical_mode (expect PASS) (exit=0)
+
+[CLI Regression Tests]
+  ✅ CLI_mode_toolkit_plus_toolkit_mode (expect INVALID_USAGE) (exit=2)
+  ✅ W_stdout_self_validate (exit=0)
+  ✅ W_stdout_verifier (exit=0)
+
+=====================================
+TOTAL: 25  PASS: 25  FAIL: 0
+=====================================
+
+[4/5] Verifying MANIFEST.sha256 ...
+  MANIFEST: 74 OK, 3 FAILED
+./bin/smoke-test.sh: FAILED
+./internal/superseded_logs/README.md: FAILED
+./tests/run_tests.sh: FAILED
+sha256sum: WARNING: 3 computed checksums did NOT match
+  MANIFEST CHECK FAILED.
+
+=== NOTE (R52c build-time only) ===
+The 3 manifest mismatches above are EXPECTED for THIS log capture only,
+because this run captured smoke-test BEFORE the manifest was rebuilt for
+R52c. The shipped delivery zip rebuilds MANIFEST.sha256 AFTER all source
+edits (run_tests.sh + smoke-test.sh + superseded_logs/README.md) are
+finalised, so on a fresh unzip the smoke-test MANIFEST step prints
+"77 OK, 0 FAILED" and exits 0. See logs/R52C_RUN_TESTS_FULL_OUTPUT.log
+for the canonical 25/25 PASS evidence.

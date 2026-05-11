@@ -1,0 +1,23 @@
+# SIC-JS Toolkit — gitignore
+# Python bytecode (must never enter a release zip)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Virtual environments
+.venv/
+venv/
+env/
+# OS junk
+.DS_Store
+Thumbs.db
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+# Local manifest regeneration scratch
+MANIFEST.local.sha256
+# Temp test artifacts
+/tmp/
+*.tmp

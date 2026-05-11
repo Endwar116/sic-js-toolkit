@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Endwar116/SIC-Semantic-Infinite-Context/sic-js-schema-v2.0.json",
+  "title": "SIC-JS v2.0 Skeleton Schema",
+  "description": "Semantic Primitive Layer schema for SIC/T protocol. 5 primitives: entity/state/relation (Static Triad) + event/intent (Dynamic Dyad).",
+  "type": "object",
+  "required": ["sic_version", "round", "entity", "state", "relation", "event", "intent"],
+  "additionalProperties": false,
+  "properties": {
+    "sic_version": {
+      "type": "string",
+      "const": "2.0",
+      "description": "SIC-JS schema version. Must be '2.0'."
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Sequence number for 3D serialization index. Must be continuous even when event=null."
+    },
+
+    "entity": {
+      "type": "object",
+      "description": "Static Triad — Identity anchor. What is this?",
+      "required": ["name", "model"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Instance name (e.g. '安安的助理')"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Underlying model (Claude / GPT / Gemini)"
+        },
+        "origin": {
+          "type": ["string", "null"],
+          "description": "Where this instance originated from"
+        },
+        "created_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Creation timestamp (ISO 8601)"
+        }
+      }
+    },
+
+    "state": {
+      "type": "object",
+      "description": "Static Triad — Current snapshot. What is happening now?",
+      "required": ["context", "current_action"],
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Current situational context"
+        },
+        "current_action": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What is being done right now"
+        },
+        "pending": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "Unfinished items"
+        },
+        "tone": {
+          "type": ["string", "null"],
+          "description": "Current tone or operational mode"
+        }
+      }
+    },
+
+    "relation": {
+      "type": "object",
+      "description": "Static Triad — Relationship anchor. Connected to what?",
+      "required": ["user"],
+      "additionalProperties": false,
+      "properties": {
+        "user": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Who is the conversation partner"
+        },
+        "anchor_memory": {
+          "type": ["string", "null"],
+          "description": "Most important associated memory"
+        },
+        "linked_entities": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "Other related entities"
+        },
+        "upstream": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{16}$",
+          "description": "Upstream session ID (sha256[:16]). null if no upstream."
+        }
+      }
+    },
+
+    "event": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Dynamic Dyad — Event record. What happened?",
+          "required": ["timestamp", "description"],
+          "additionalProperties": false,
+          "properties": {
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When it happened (ISO 8601)"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1,
+              "description": "What happened"
+            },
+            "trigger": {
+              "type": ["string", "null"],
+              "description": "What triggered it (free text)"
+            }
+          }
+        },
+        {
+          "type": "null",
+          "description": "Confirmed no event this round (sensor on, nothing detected)"
+        }
+      ]
+    },
+
+    "intent": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Dynamic Dyad — Intent anchor. For what purpose?",
+          "required": ["user_intent"],
+          "additionalProperties": false,
+          "properties": {
+            "user_intent": {
+              "type": "string",
+              "minLength": 1,
+              "description": "What the user wants"
+            },
+            "system_intent": {
+              "type": ["string", "null"],
+              "description": "What the system is doing"
+            },
+            "core_question": {
+              "type": ["string", "null"],
+              "description": "Underlying core question"
+            }
+          }
+        },
+        {
+          "type": "null",
+          "description": "Confirmed no intent this round"
+        }
+      ]
+    }
+  }
+}

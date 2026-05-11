@@ -1,0 +1,23 @@
+{
+  "sic_version": "2.0",
+  "round": 1,
+  "entity": {
+    "name": "test",
+    "model": "TestModel",
+    "created_at": "not-a-date"
+  },
+  "state": {
+    "context": "c",
+    "current_action": "a"
+  },
+  "relation": {
+    "user": "u",
+    "upstream": null,
+    "upstream_type": "none"
+  },
+  "event": {
+    "timestamp": "also-not-a-date",
+    "description": "invalid timestamp probe"
+  },
+  "intent": null
+}

@@ -1,0 +1,45 @@
+=== Scenario 3: macOS no-GNU-timeout simulation ===
+=== Setup ===
+PATH=/tmp/r52c_logs/sic-js-toolkit/.venv/bin:/tmp/tmp.Lva4g48GFe:/usr/bin:/bin
+which timeout : /tmp/tmp.Lva4g48GFe/timeout
+which gtimeout: /tmp/tmp.Lva4g48GFe/gtimeout
+ls -la timeout symlinks:
+lrwxrwxrwx 1 ubuntu ubuntu 10 May  8 17:18 /tmp/tmp.Lva4g48GFe/gtimeout -> /bin/false
+lrwxrwxrwx 1 ubuntu ubuntu 10 May  8 17:18 /tmp/tmp.Lva4g48GFe/timeout -> /bin/false
+
+--- Functional probe results (used by R52c hardened resolver) ---
+  timeout 1 true  -> exit=1  (expected non-zero, indicating not GNU)
+  gtimeout 1 true -> exit=1  (expected non-zero, indicating not GNU)
+
+=== Invoke runner (expected: actionable exit 2, NOT 24x exit-127 cascade) ===
+[runner] ERROR: No usable `timeout` / `gtimeout` command found.
+(Either neither is on PATH, or both failed the functional probe
+ `<cmd> 1 true` -> exit 0, indicating they are not GNU coreutils timeout.)
+
+The test runner uses per-test timeouts to prevent hangs. Without a working
+timeout command, a single hung test would freeze the whole runner.
+
+Resolution by platform:
+
+  Linux (Debian/Ubuntu/RHEL/CentOS):
+    `timeout` ships with GNU coreutils and should already be installed.
+    If missing: sudo apt-get install coreutils
+
+  macOS:
+    macOS does not ship GNU `timeout`. Install via Homebrew:
+        brew install coreutils
+    After install, the command is named `gtimeout` (this script auto-detects it).
+
+  Local evaluation fallback (NOT for official reproducibility):
+    NO_TIMEOUT=1 bash tests/run_tests.sh
+    This skips timeout protection. Use only for quick local checks where
+    you trust the tests will complete.
+
+This is NOT a toolkit-core failure. The validator, writer, and verifier
+can still be invoked manually. See README.md > "Verify core tools manually".
+
+Exiting early to avoid a misleading 24x "exit 127" failure cascade.
+
+=== Result ===
+runner exit code = 2
+VERDICT: PASS (R52c portable timeout resolver correctly emitted actionable exit-2)

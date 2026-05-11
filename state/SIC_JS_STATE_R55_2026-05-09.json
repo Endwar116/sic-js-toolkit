@@ -1,0 +1,19 @@
+{
+  "sic_version": "2.0",
+  "round": 55,
+  "entity": {
+    "name": "Mie Mie (Manus AI)",
+    "model": "Manus/Claude"
+  },
+  "state": {
+    "context": "R55: R52c portable timeout fix delivered. JG R52b macOS reproducibility test identified that GNU timeout is missing on macOS, causing a 24x exit-127 failure cascade. R52c introduces a portable timeout resolver in tests/run_tests.sh and bin/smoke-test.sh: (a) command-v lookup of timeout then gtimeout; (b) functional probe (cmd 1 true must return 0) added in R52c-final after dog-fooding caught a shadow-binary case where command-v alone selected a non-functional timeout; (c) actionable exit-2 with platform-specific resolution if no candidate is usable; (d) NO_TIMEOUT=1 explicit local-eval fallback with four WARNING lines; (e) --kill-after=5s grace; (f) smoke-test preflight aligned with runner. Three scenarios validated: Linux native 25/25 PASS, NO_TIMEOUT=1 25/25 PASS with WARNINGs, macOS no-timeout PATH-shadow simulation -> exit 2 with actionable error. Documentation updated across README/QUICKSTART/TROUBLESHOOTING/CHANGELOG/RELEASE_STATUS. Old R52A and R52B logs moved to internal/superseded_logs/ and labeled SUPERSEDED. R52C_PORTABILITY_REPORT.md documents fix, validation matrix, and open items. Awaiting Lao Xiang R52c re-review, JG real-macOS verification (gtimeout branch), and Anan Gate 7 ruling.",
+    "current_action": "R52c hardened (functional probe added), three-scenario portability re-validated, MANIFEST.sha256 rebuilt (77 OK 0 FAILED), smoke-test ALL PASS in clean unzip. Awaiting Lao Xiang re-review, JG real-macOS verification, and Anan Gate 7 final release ruling."
+  },
+  "relation": {
+    "user": "Anan",
+    "upstream_type": "file",
+    "upstream": "SIC_JS_STATE_R54_2026-05-08.json"
+  },
+  "event": null,
+  "intent": null
+}
