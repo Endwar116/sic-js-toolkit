@@ -25,7 +25,7 @@ independent verifier and an approval (A-004). Differences from the official vali
 """
 import argparse, base64, copy, datetime as _dt, hashlib, json, os, re, sys, zlib
 
-VERSION = "1.0.1"  # 1.0.0 = sha256 2d947d8b…; 1.0.1 adds closest-branch detail to oneOf errors and a new version label
+VERSION = "1.0.2"  # 1.0.0 = 2d947d8b…; 1.0.1 = a70f3b7e… (closest-branch oneOf detail, label fixed); 1.0.2: --version checks the embedded frozen schema first; unreadable JSON input gives a one-line FAIL instead of a traceback
 ISSUANCE = "SICJS-4.1-FR-002"
 SCHEMA_SHA256 = "23c15b4c758a1c48d1631e2c4c499b822ef2a3905fb67b00ea64d32f2ac56ca7"
 _SCHEMA_ZB64 = (
@@ -97,7 +97,10 @@ def schema_bytes(path=None):
     if path:
         b = open(path, "rb").read()
     else:
-        b = zlib.decompress(base64.b64decode(_SCHEMA_ZB64))
+        try:
+            b = zlib.decompress(base64.b64decode(_SCHEMA_ZB64))
+        except (ValueError, zlib.error) as e:
+            raise SystemExit("FAIL frozen-schema: embedded copy is damaged (%s); refusing to run" % e)
     got = hashlib.sha256(b).hexdigest()
     if got != SCHEMA_SHA256:
         raise SystemExit("FAIL frozen-schema: sha256 %s != frozen %s (refusing a modified schema)" % (got, SCHEMA_SHA256))
@@ -526,7 +529,21 @@ def quickload(lang="zh", agent="(your name)"):
 
 # ---------------------------------------------------------------- CLI
 def _load_json(path):
-    return json.load(sys.stdin) if path == "-" else json.load(open(path, encoding="utf-8"))
+    try:
+        return json.load(sys.stdin) if path == "-" else json.load(open(path, encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise SystemExit("FAIL input: cannot read JSON from %s (%s) / 讀不到 JSON" % (path, e))
+
+class _VersionAction(argparse.Action):
+    """--version checks the embedded frozen schema before printing (exit 1 if it was modified).
+    This catches a damaged or partly edited file; a wholly replaced file is caught only by checking the
+    file's sha256 against the manifest from outside. / 先驗內嵌的凍結 schema 再印版本；整檔被換掉要靠外部比對 sha256。"""
+    def __init__(self, option_strings, dest=argparse.SUPPRESS, default=argparse.SUPPRESS, help=None):
+        super().__init__(option_strings=option_strings, dest=dest, default=default, nargs=0, help=help)
+    def __call__(self, parser, namespace, values, option_string=None):
+        schema_bytes()
+        print("sicjs41 %s / %s / frozen schema OK sha256:%s" % (VERSION, ISSUANCE, SCHEMA_SHA256[:12]))
+        parser.exit(0)
 
 def _report(res):
     for w in res.get("warnings", []):
@@ -537,7 +554,7 @@ def _report(res):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="SIC-JS 4.1 portable toolkit (stdlib only) / SIC-JS 4.1 可攜工具包")
-    ap.add_argument("--version", action="version", version="sicjs41 " + VERSION + " / " + ISSUANCE)
+    ap.add_argument("--version", action=_VersionAction, help="check the embedded frozen schema, then print the version / 先驗凍結 schema 再印版本")
     sp = ap.add_subparsers(dest="cmd", required=True)
     q = sp.add_parser("quickload"); q.add_argument("--lang", default="zh", choices=["zh", "en"]); q.add_argument("--agent", default="(your name)")
     r = sp.add_parser("rules"); r.add_argument("--lang", default="zh", choices=["zh", "en"])

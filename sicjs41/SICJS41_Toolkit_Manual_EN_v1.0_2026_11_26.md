@@ -131,6 +131,10 @@ Differential test (2026-11-26): 73 cases on the first run (17 official fixtures 
 |---|---|---|
 | 1.0.0 | `2d947d8b784d88ad1047d2df9761e8d98b3b17752cff8b283470075df168bd4a` | First release (this is what ledger entry 35 recorded) |
 | 1.0.0 (second build under the same number, withdrawn) | `80d937b02040bdbd8d06d5e8bd41c43b0bf371c737fe6108cd2a73ebc2ff511a` | oneOf failures also list the closest branch's errors; the version label was not bumped, which broke SIC-JS's own G-001 (identifiers are never reused) |
-| 1.0.1 | see `manifest.json` | Same content as the row above with the version label corrected; every test re-run |
+| 1.0.1 | `a70f3b7e429e256e9e72bc7e5136cbd6d53125e067256270db5e12faca68eb72` | Same content as the row above with the version label corrected; every test re-run. `--version` does not yet check the frozen schema, although the previous manifest said it did; that was wrong |
+| 1.0.2 | see `manifest.json` | `--version` checks the embedded frozen schema before printing and exits 1 if it is damaged; a damaged embedded copy or unreadable JSON input gives one FAIL line instead of a traceback; every test re-run |
+
+The `--version` self-check catches a damaged or partly edited file only.
+A wholly replaced file is caught only by checking its sha256 from outside the tool, so always compute sha256 yourself and compare it with the manifest when loading.
 
 The current version and hash are always those in the technical page's `kit/manifest.json`.
