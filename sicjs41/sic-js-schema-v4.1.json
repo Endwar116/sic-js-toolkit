@@ -1,0 +1,1129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:sic-js:schema:4.1:fr-002",
+  "title": "SIC-JS 4.1 Frozen Release FR-001",
+  "description": "Frozen canonical SIC-JS 4.1 schema. Preserves v3.0 six primitives and adds governance, execution, assurance, and extensions structural layers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sic_version",
+    "governance",
+    "round",
+    "entity",
+    "state",
+    "relation",
+    "event",
+    "intent"
+  ],
+  "properties": {
+    "sic_version": {
+      "const": "4.1"
+    },
+    "governance": {
+      "$ref": "#/$defs/governance"
+    },
+    "task": {
+      "$ref": "#/$defs/task"
+    },
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "entity": {
+      "$ref": "#/$defs/entity"
+    },
+    "state": {
+      "$ref": "#/$defs/state"
+    },
+    "relation": {
+      "$ref": "#/$defs/relation"
+    },
+    "assurance": {
+      "$ref": "#/$defs/assurance"
+    },
+    "event": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/eventObject"
+        }
+      ]
+    },
+    "intent": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/intentObject"
+        }
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/extension"
+      },
+      "default": []
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "task"
+        ],
+        "properties": {
+          "task": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "assurance"
+        ],
+        "properties": {
+          "assurance": {
+            "required": [
+              "evidence_refs",
+              "approval_refs",
+              "verifier_refs",
+              "verification_status"
+            ],
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              },
+              "approval_refs": {
+                "minItems": 1
+              },
+              "verifier_refs": {
+                "minItems": 1
+              },
+              "verification_status": {
+                "const": "verified"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance": {
+            "properties": {
+              "conformance_profile": {
+                "enum": [
+                  "attested",
+                  "transparent"
+                ]
+              }
+            },
+            "required": [
+              "conformance_profile"
+            ]
+          }
+        },
+        "required": [
+          "governance"
+        ]
+      },
+      "then": {
+        "required": [
+          "execution",
+          "assurance"
+        ],
+        "properties": {
+          "governance": {
+            "properties": {
+              "trust_boundary": {
+                "properties": {
+                  "root_of_trust_refs": {
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "root_of_trust_refs"
+                ]
+              }
+            }
+          },
+          "assurance": {
+            "required": [
+              "trace_ref",
+              "execution_root_digest",
+              "attestation_refs",
+              "verifier_refs",
+              "run_binding",
+              "attestation_level"
+            ],
+            "properties": {
+              "trace_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "execution_root_digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "attestation_refs": {
+                "minItems": 1
+              },
+              "verifier_refs": {
+                "minItems": 1
+              },
+              "run_binding": {
+                "type": "object"
+              },
+              "attestation_level": {
+                "enum": [
+                  "signed_execution",
+                  "independently_verified",
+                  "transparency_witnessed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance": {
+            "properties": {
+              "conformance_profile": {
+                "const": "transparent"
+              }
+            },
+            "required": [
+              "conformance_profile"
+            ]
+          }
+        },
+        "required": [
+          "governance"
+        ]
+      },
+      "then": {
+        "properties": {
+          "assurance": {
+            "required": [
+              "transparency_refs",
+              "attestation_level"
+            ],
+            "properties": {
+              "transparency_refs": {
+                "minItems": 1
+              },
+              "attestation_level": {
+                "const": "transparency_witnessed"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "deliverable",
+        "status",
+        "created_round"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(?:[A-Z]+-)?[A-Z]{1,2}-[1-9][0-9]{0,2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deliverable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "dismissed",
+            "archived"
+          ]
+        },
+        "created_round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "priority": {
+          "oneOf": [
+            {
+              "enum": [
+                "P0",
+                "P1",
+                "P2"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_horizon": {
+          "oneOf": [
+            {
+              "enum": [
+                "short",
+                "medium",
+                "long"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "model"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identity_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional external verifiable identity reference. SIC-JS does not validate the identity provider itself."
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "context",
+        "current_action"
+      ],
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "current_action": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Frozen 4.1 reconciliation of the v3.0 contradiction: null is legal but produces semantic_rupture WARN in the semantic validator."
+        },
+        "pending": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "typedLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "target_ref"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[A-Za-z][A-Za-z0-9._/-]*$",
+          "description": "Namespaced relation type, e.g. sic:depends_on or prov:wasDerivedFrom."
+        },
+        "target_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "type": "string",
+          "minLength": 1
+        },
+        "anchor_memory": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "linked_entities": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstream": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{16}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "links": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/typedLink"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "eventObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp",
+        "description"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "trigger": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "intentObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "user_intent"
+      ],
+      "properties": {
+        "user_intent": {
+          "type": "string"
+        },
+        "system_intent": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "core_question": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ref"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "available",
+            "restricted",
+            "unavailable"
+          ]
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "permission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "effect",
+        "authority_ref"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "effect": {
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        },
+        "authority_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scope": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "delegated_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valid_until": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enforcement_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Reference to the runtime/policy enforcement point. Declaration is not proof of enforcement."
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_refs",
+        "permissions"
+      ],
+      "properties": {
+        "authority_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/permission"
+          }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "kind"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaces",
+        "capabilities",
+        "authority",
+        "resources",
+        "policy_refs"
+      ],
+      "properties": {
+        "workspaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/workspace"
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "authority": {
+          "$ref": "#/$defs/authority"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resource"
+          }
+        },
+        "policy_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_refs",
+        "approval_refs",
+        "verifier_refs",
+        "integrity_refs",
+        "verification_status"
+      ],
+      "properties": {
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "approval_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "verifier_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "integrity_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "verification_status": {
+          "enum": [
+            "unverified",
+            "pending",
+            "verified",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "trace_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "execution_root_digest": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attestation_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "claim_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "run_binding": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "run_id",
+                "nonce"
+              ],
+              "properties": {
+                "run_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "nonce": {
+                  "type": "string",
+                  "minLength": 8
+                },
+                "issued_at": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "expires_at": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attestation_level": {
+          "enum": [
+            "self_declared",
+            "hashed",
+            "chained",
+            "signed_execution",
+            "independently_verified",
+            "transparency_witnessed"
+          ]
+        },
+        "transparency_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+    "extension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "required",
+        "schema_ref",
+        "depends_on"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+/[a-z][a-z0-9-]*$",
+          "description": "Reverse-DNS-like vendor/name extension identifier, e.g. org.sic-sit/sca."
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "schema_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "config_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+/[a-z][a-z0-9-]*$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "schema_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuance_id",
+        "lifecycle",
+        "lineage",
+        "ruleset_refs",
+        "version_policy",
+        "identifier_policy",
+        "conformance_profile",
+        "trust_boundary"
+      ],
+      "properties": {
+        "issuance_id": {
+          "type": "string",
+          "const": "SICJS-4.1-FR-002",
+          "description": "Unique append-only issuance identifier; consumed on publication and never reused."
+        },
+        "lifecycle": {
+          "const": "frozen"
+        },
+        "lineage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inherits_from",
+            "supersedes"
+          ],
+          "properties": {
+            "inherits_from": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "supersedes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "reverts_to": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "ruleset_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "decision_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "change_authority_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "version_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "reuse",
+            "rollback",
+            "consumed_on_issuance"
+          ],
+          "properties": {
+            "mode": {
+              "const": "monotonic_append_only"
+            },
+            "reuse": {
+              "const": "forbidden"
+            },
+            "rollback": {
+              "const": "new_higher_identifier_only"
+            },
+            "consumed_on_issuance": {
+              "const": true
+            }
+          }
+        },
+        "identifier_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reuse",
+            "ordered_serials",
+            "retired_ids"
+          ],
+          "properties": {
+            "reuse": {
+              "const": "forbidden"
+            },
+            "ordered_serials": {
+              "const": "monotonic"
+            },
+            "retired_ids": {
+              "const": "tombstoned"
+            },
+            "registry_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "conformance_profile": {
+          "enum": [
+            "core",
+            "governed",
+            "attested",
+            "transparent"
+          ]
+        },
+        "trust_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "self_certification",
+            "verifier_separation_required",
+            "root_of_trust_refs",
+            "enforcement_boundary_refs"
+          ],
+          "properties": {
+            "self_certification": {
+              "const": "forbidden"
+            },
+            "verifier_separation_required": {
+              "const": true
+            },
+            "root_of_trust_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "enforcement_boundary_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "protected_signing_key_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true,
+              "default": []
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
