@@ -25,7 +25,7 @@ independent verifier and an approval (A-004). Differences from the official vali
 """
 import argparse, base64, copy, datetime as _dt, hashlib, json, os, re, sys, zlib
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"  # 1.0.0 = sha256 2d947d8b…; 1.0.1 adds closest-branch detail to oneOf errors and a new version label
 ISSUANCE = "SICJS-4.1-FR-002"
 SCHEMA_SHA256 = "23c15b4c758a1c48d1631e2c4c499b822ef2a3905fb67b00ea64d32f2ac56ca7"
 _SCHEMA_ZB64 = (

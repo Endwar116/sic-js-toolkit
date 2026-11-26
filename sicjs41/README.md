@@ -1,6 +1,6 @@
 # SIC-JS 4.1 kit (`sicjs41/`)
 
-Version 1.0.0 · 2026-11-26 · issuance `SICJS-4.1-FR-002` (frozen) · MIT, same as this repository.
+Version 1.0.1 · 2026-11-26 · issuance `SICJS-4.1-FR-002` (frozen) · MIT, same as this repository.
 
 This folder is separate from the SIC-JS **v2.0** toolkit at the repository root; nothing outside `sicjs41/` was changed, and the root `MANIFEST.sha256` still verifies.
 

@@ -126,3 +126,13 @@ k.sha256_uri(obj)                           # SICJS-C14N-1
 - 外部擴充登記表只在 Python API 收（`external_extension_ids`），指令列沒有旗標。
 - 快速載入提示把 `change_authority_refs` 寫成 `user://anan`（IMCC 用）；別的團隊要換成自己的變更權人。
 - 工具包是德德做、德德測的，還沒有另一家廠牌或另一個人獨立重跑。
+
+## 8. 版本紀錄
+
+| 版本 | sicjs41.py 的 sha256 | 改了什麼 |
+|---|---|---|
+| 1.0.0 | `2d947d8b784d88ad1047d2df9761e8d98b3b17752cff8b283470075df168bd4a` | 第一版（日誌第 35 筆記的就是這份） |
+| 1.0.0（同號第二份，已作廢） | `80d937b02040bdbd8d06d5e8bd41c43b0bf371c737fe6108cd2a73ebc2ff511a` | oneOf 不過時多列出最接近那一支的錯誤；版本號忘了改，違反 SIC-JS 自己的 G-001（識別碼不可重用） |
+| 1.0.1 | 見 `manifest.json` | 內容同上一列，只把版本號改正；所有測試重跑 |
+
+現行版本與雜湊一律以技術頁的 `kit/manifest.json` 為準。
